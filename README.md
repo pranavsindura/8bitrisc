@@ -1,10 +1,6 @@
 # 8 Bit RISC Processor
 An attempt to build a minimal 8bit processor.
 A project under the CAO course.
-Made by - 
-**Pranav Sindura 2018KUCP1012**
-Submitted to -
-**Dr. Ashok Kherodia**
 ## Components
 The various components are - 
 1.	Control Unit *(control.vhd)*
