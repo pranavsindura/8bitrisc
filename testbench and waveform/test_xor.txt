@@ -1,0 +1,46 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+--------------------------------------------------------------
+
+entity test is
+
+end test;
+
+--------------------------------------------------------------
+
+architecture behav of test is
+    component xor_big is
+        Port ( a : in STD_LOGIC_VECTOR (7 downto 0);
+               b : in STD_LOGIC_VECTOR (7 downto 0);
+               res : out STD_LOGIC_VECTOR (7 downto 0));
+    end component;
+    signal a,b,res:std_logic_vector(7 downto 0) :=x"00";
+begin
+    uut_xor : xor_big port map(a=>a, b=>b, res=>res);
+    process
+    begin
+        wait for 1000ns;
+        a <= x"44";
+        b <= x"25";
+        wait for 10ns;
+        a <= x"65";
+        b <= x"63";
+        wait for 10ns;
+        a <= x"08";
+        b <= x"0A";
+        wait for 10ns;
+        a <= x"11";
+        b <= x"ff";
+        wait for 10ns;
+        a <= x"01";
+        b <= x"ff";
+        wait for 10ns;
+        a <= x"de";
+        b <= x"25";
+        wait;
+    end process;
+
+end behav;

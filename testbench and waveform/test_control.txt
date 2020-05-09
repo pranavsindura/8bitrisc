@@ -1,0 +1,40 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+--------------------------------------------------------------
+
+entity test is
+
+end test;
+
+--------------------------------------------------------------
+
+architecture behav of test is
+    signal CLK_FREQ : integer := 100e6; --100 MHz
+    signal CLK_PER : time := 1000ms/CLK_FREQ; --10ns
+    signal CLK : std_logic := '1';
+    component control is
+          Port ( CLK : in STD_LOGIC;
+           I_reset : in STD_LOGIC;
+           O_state : out STD_LOGIC_VECTOR (4 downto 0)
+           );
+    end component;
+    signal reset : std_logic := '1';
+    signal state : std_logic_vector(4 downto 0);
+begin
+    CLK <= not CLK after CLK_PER/2;
+    uut_control : control port map(
+        CLK=>CLK,
+        I_reset=>reset,
+        O_state=>state
+    );
+    process
+    begin
+        wait for 1000ns;
+        reset <= '0';
+        wait;
+    end process;
+
+end behav;

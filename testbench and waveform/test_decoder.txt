@@ -1,0 +1,66 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+--------------------------------------------------------------
+
+entity test is
+
+end test;
+
+--------------------------------------------------------------
+
+architecture behav of test is
+    signal CLK_FREQ : integer := 100e6; --100 MHz
+    signal CLK_PER : time := 1000ms/CLK_FREQ; --10ns
+    signal CLK : std_logic := '1';
+    component decoder is
+          Port ( 
+        CLK: in std_logic;
+        I_en: in std_logic;
+        I_instr: in std_logic_vector(15 downto 0);
+        O_aluop: out std_logic_vector(3 downto 0);
+        O_selA, O_selB, O_selD: out std_logic_vector(2 downto 0);
+        O_rDwe: out std_logic;
+        O_ImmData: out std_logic_vector(7 downto 0)
+       );
+    end component;
+    signal instr : std_logic_vector(15 downto 0) := x"0000";
+    signal en, rDwe : std_logic := '0';
+    signal aluop : std_logic_vector(3 downto 0);
+    signal selA, selB, selD : std_logic_vector(2 downto 0);
+    signal ImmData : std_logic_vector(7 downto 0) := x"00";
+begin
+    CLK <= not CLK after CLK_PER/2;
+    uut_decoder : decoder port map(
+        CLK=>CLK,
+        I_en => en,
+        I_instr => instr,
+        O_aluop=>aluop,
+        O_selA=>selA,
+        O_selB=>selB,
+        O_selD=>selD,
+        O_rDwe=>rDwe,
+        O_ImmData=>ImmData
+    );
+    process
+    begin
+        wait for 1000ns;
+        en<='1';
+        wait for 2*CLK_PER;
+        instr <= "1000" & "000" & x"26" & "0";
+        wait for 2*CLK_PER;
+        instr <= "1000" & "001" & x"44" & "0";
+        wait for 2*CLK_PER;
+        instr <= "0000" & "001" & "001" & "000" & "000";
+        wait for 2*CLK_PER;
+        instr <= "1010" & "000" & "000" & "000" & "000";
+        wait for 2*CLK_PER;
+        instr <= "1001" & "100" & "001" & "000" & "000";
+        wait for 2*CLK_PER;
+        instr <= "1001" & "111" & "100" & "000" & "000";
+        wait;
+    end process;
+
+end behav;

@@ -1,0 +1,61 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+--------------------------------------------------------------
+
+entity test is
+
+end test;
+
+--------------------------------------------------------------
+
+architecture behav of test is
+    component full_adder is
+        port (
+            in1,in2,cin : in std_logic;
+            out1, cout: out std_logic
+        );
+    end component;
+    signal a,b,sum,cin, cout: std_logic :='0';
+begin
+    uut_full_adder : full_adder port map(in1=>a, in2=>b, cin=>cin,out1=>sum,cout=>cout);
+    process
+    begin
+        wait for 1000ns;
+        a <= '0';
+        b <= '0';
+        cin<='0';
+        wait for 10ns;
+        a <= '0';
+        b <= '0';
+        cin<='1';
+        wait for 10ns;
+        a <= '0';
+        b <= '1';
+        cin<='0';
+        wait for 10ns;
+        a <= '0';
+        b <= '1';
+        cin<='1';
+        wait for 10ns;
+        a <= '1';
+        b <= '0';
+        cin<='0';
+        wait for 10ns;
+        a <= '1';
+        b <= '0';
+        cin<='1';
+        wait for 10ns;
+        a <= '1';
+        b <= '1';
+        cin<='0';
+        wait for 10ns;
+        a <= '1';
+        b <= '1';
+        cin<='1';
+        wait;
+    end process;
+
+end behav;

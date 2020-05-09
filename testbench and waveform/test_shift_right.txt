@@ -1,0 +1,41 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+--------------------------------------------------------------
+
+entity test is
+
+end test;
+
+--------------------------------------------------------------
+
+architecture behav of test is
+    component shift_right is
+        Port ( a : in STD_LOGIC_VECTOR (7 downto 0);
+               res : out STD_LOGIC_VECTOR (7 downto 0));
+    end component;
+    signal a,res:std_logic_vector(7 downto 0) :=x"00";
+begin
+    uut_shift_right : shift_right port map(a=>a, res=>res);
+    process
+    begin
+        wait for 1000ns;
+        a <= x"44";
+        wait for 10ns;
+        a <= x"65";
+        wait for 10ns;
+        a <= x"08";
+        wait for 10ns;
+        a <= x"01";
+        wait for 10ns;
+        a <= x"02";
+        wait for 10ns;
+        a <= x"04";
+        wait for 10ns;
+        a <= x"08";
+        wait;
+    end process;
+
+end behav;

@@ -1,0 +1,69 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+--------------------------------------------------------------
+
+entity test is
+
+end test;
+
+--------------------------------------------------------------
+
+architecture behav of test is
+    signal CLK_FREQ : integer := 100e6; --100 MHz
+    signal CLK_PER : time := 1000ms/CLK_FREQ; --10ns
+    signal CLK : std_logic := '1';
+    component memorybank is
+          Port ( 
+        CLK: in std_logic;
+        I_we: in std_logic;
+        I_addr : in std_logic_vector(7 downto 0);
+        I_data: in std_logic_vector(15 downto 0);
+        O_data: out std_logic_vector(15 downto 0)
+        );
+    end component;
+    signal we : std_logic := '0';
+    signal addr:std_logic_vector(7 downto 0);
+    signal dataIn, dataOut : std_logic_vector(15 downto 0);
+begin
+    CLK <= not CLK after CLK_PER/2;
+    uut_memorybank : memorybank port map(
+        CLK=>CLK,
+        I_we=>we,
+        I_addr=>addr,
+        I_data=>dataIn,
+        O_data=>dataOut
+    );
+    process
+    begin
+        wait for 1000ns;
+        wait for CLK_PER;
+        addr <= x"00";
+        dataIn <= "1000" & "000" & x"26" & "0";
+        we<='1';
+        wait for CLK_PER;
+        we <= '0';
+        wait for CLK_PER;
+        addr <= x"01";
+        dataIn <= "1000" & "001" & x"44" & "0";
+        we <= '1';
+        wait for CLK_PER;
+        we <= '0';
+        wait for CLK_PER;
+        addr <= x"02";
+        dataIn <= "0000" & "001" & "001" & "000" & "000";
+        we <= '1';
+        wait for CLK_PER;
+        we <= '0';
+        wait for CLK_PER;
+        addr <= x"00";
+        wait for CLK_PER;
+        addr <= x"01";
+        wait for CLK_PER;
+        addr <= x"02";
+        wait;
+    end process;
+
+end behav;

@@ -1,0 +1,77 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+--------------------------------------------------------------
+
+entity test is
+
+end test;
+
+--------------------------------------------------------------
+
+architecture behav of test is
+    signal CLK_FREQ : integer := 100e6; --100 MHz
+    signal CLK_PER : time := 1000ms/CLK_FREQ; --10ns
+    signal CLK : std_logic := '1';
+    component registerbank is
+      Port ( 
+        CLK: in std_logic;
+        I_we: in std_logic;
+        I_en: in std_logic;
+        I_selA : in std_logic_vector(2 downto 0);
+        I_selB : in std_logic_vector(2 downto 0);
+        I_selD : in std_logic_vector(2 downto 0);
+        O_dataA: out std_logic_vector(7 downto 0);
+        O_dataB: out std_logic_vector(7 downto 0);
+        I_dataD: in std_logic_vector(7 downto 0)
+       );
+    end component;
+    signal we, en : std_logic := '0';
+    signal selA, selB, selD : std_logic_vector(2 downto 0) := "000";
+    signal dataA, dataB, dataD : std_logic_vector(7 downto 0) := x"00";
+begin
+    CLK <= not CLK after CLK_PER/2;
+    uut_registerbank : registerbank port map(
+        CLK=>CLK,
+        I_we => we,
+        I_en => en,
+        I_selA=>selA,
+        I_selB=>selB,
+        I_selD=>selD,
+        O_dataA=>dataA,
+        O_dataB=>dataB,
+        I_dataD=>dataD
+    );
+    process
+    begin
+        wait for 1000ns;
+        wait for CLK_PER;
+        selA <= "010";
+        selB <= "000";
+        dataD <= x"89";
+        selD <= "010";
+        en <= '1';
+        we <= '1';
+        wait for CLK_PER;
+        we <= '0';
+        wait for CLK_PER;
+        selD <= "000";
+        dataD <= x"bb";
+        we <= '1';
+        wait for CLK_PER;
+        we <= '0';
+        wait for CLK_PER;
+        selD <= "100";
+        dataD <= x"12";
+        we <= '1';
+        wait for CLK_PER;
+        we <= '0';
+        wait for CLK_PER;
+        selA <= "100";
+        selB <= "010";
+        wait;
+    end process;
+
+end behav;
